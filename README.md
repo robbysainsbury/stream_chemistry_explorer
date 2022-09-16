@@ -1,0 +1,1 @@
+A web-app created in R-Shiny that reads stream chemistry data from a .csv file and displays a dashboard for simplified EDA. 
