@@ -28,7 +28,7 @@ ui <- fluidPage(
               `YSI` = YSIVars)
             ),
             
-            selectInput("smoothLine", "Line of Best Fit?", width="90%", list(
+            selectInput("smoothLine", "Plot Lines?", width="90%", list(
               "None" = " none", "One" = "one", "Burn Level" = "burnlevel"))
           ),
           column(5, #right input col
@@ -37,10 +37,12 @@ ui <- fluidPage(
             #drop down menu for selecting y variable
             selectInput("yVar", "Response Variable", width="90%", list(
               `SCAN` = SCANVars,
-              `YSI` = YSIVars)
-            )
+              `YSI` = YSIVars)),
+              
+            #drop down menu for selecting color grouping
+            selectInput("groupBy", "Group By", width="90%", list(
+              "None" = " none", "Burn Level" = "burnlevel"))
           )
-          
         ),
         
         #Note: Creating the drop down menus for variable selection
@@ -48,17 +50,13 @@ ui <- fluidPage(
         #The lists each have titles that appear, you can set it so the first "____" is a label 
         #and the actual value is second with an equal sign between them
         
-
-
         
         #remove NAs drop down 
-        checkboxInput("removeNAs", "Remove Burn Level NAs?",TRUE),
+        checkboxInput("removeNAs", "Remove *Group* NAs?",TRUE),
         
-        #testing mutiple checkbox input
-        # checkboxGroupInput("yVarBox", "Choose Response Variables", list(
-        #   `SCAN` = SCANVars,
-        #   `YSI` = YSIVars)
-        # )
+        actionButton("export","Export the current data set?"),
+        actionButton("export","Export the current figure?")
+        
       ),
         #output the message 
         #textOutput("varMessage"),
@@ -99,7 +97,7 @@ server <- function(input, output) {
           geom_boxplot() +
           coord_cartesian(ylim = yLims)+
           xlab(getLabel(input$xVar))+ylab(getLabel(input$yVar))+
-          labs(title=paste(getLabel(input$yVar), " explained by ",getLabel(input$xVar),sep = ""))
+          labs(title=paste(getLabel(input$yVar), " Explained by ",getLabel(input$xVar),sep = ""))
 
       }
       else{ #scatter plot
@@ -115,7 +113,7 @@ server <- function(input, output) {
           coord_cartesian(xlim = xLims, ylim = yLims)+
           scale_color_manual(values=burnLevelColors)+
           xlab(getLabel(input$xVar))+ylab(getLabel(input$yVar))+
-          labs(title=paste(getLabel(input$yVar), " explained by ",getLabel(input$xVar),sep = ""))
+          labs(title=paste(getLabel(input$yVar), " Explained by ",getLabel(input$xVar),sep = ""))
         
         #checking if they want a line of best fit and how they want it
         #one line being added
